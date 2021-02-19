@@ -1,33 +1,67 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./Banner.css";
+//? import local axios from axios instance
+// import axios from "../../utility/axios";
+// import requests from "../../utility/Requests";
+import axios from "axios";
+import { BASE_URL, FETCH_NETFLIX_ORIGINALS } from "../../utility/api";
 
 const Banner = () => {
-    function truncate(string, n) {
-        return string?.length > n ? string.substr(0, n-1) + "..." : string;
-    }
+  const [movie, setMovie] = useState([]);
+
+  // useEffect(() => {
+  //     async function fetchMovieData() {
+  //         const request = await axios.get(requests.fetchNetflixOriginals);
+  //         setMovie(
+  //             request.data.results[
+  //                 Math.floor(Math.random()* request.data.results.length - 1)
+  //             ]
+  //         );
+  //         return request;
+  //     }
+  //     fetchMovieData();
+  // },[])
+  //const API_KEY = "f81980ff410e46f422d64ddf3a56dddd";
+
+  const fetchMovieData = () => {
+    const url = `${BASE_URL}${FETCH_NETFLIX_ORIGINALS}`;
+    axios.get(url).then((res) => {
+      // console.log(res.data);
+      setMovie(
+        res.data.results[
+          Math.floor(Math.random() * res.data.results.length - 1)
+        ]
+      );
+    });
+  };
+
+  useEffect(() => {
+    fetchMovieData();
+  }, []);
+
+  console.log(movie);
+
+  function truncate(string, n) {
+    return string?.length > n ? string.substr(0, n - 1) + "..." : string;
+  }
   return (
     <header
       className="banner"
       style={{
         backgroundSize: "cover",
-        backgroundImage: `url("https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Black_flag.svg/1200px-Black_flag.svg.png")`,
+        backgroundImage: `url("https://image.tmdb.org/t/p/original/${movie?.backdrop_path}")`,
         backgroundPosition: "center center",
       }}
     >
       <div className="banner_contents">
-        <h1 className="banner_title">Movie Name</h1>
+        <h1 className="banner_title">
+          {movie?.title || movie?.name || movie?.original_name}
+        </h1>
         <div className="banner_buttons">
           <button className="banner_button">Play</button>
           <button className="banner_button">My List</button>
         </div>
-        <h1 className="banner_description">
-          {truncate(`this is text description this is text description this is text
-          description this is text description this is text description this is
-          text description this is text description this is text description this
-          is text description this is text description this is text
-          this is text description this is text description this is text
-          description`,150) }
-        </h1>
+        <h1 className="banner_description">{truncate(movie?.overview, 150)}</h1>
       </div>
       <div className="banner_fadeBottom" />
     </header>
