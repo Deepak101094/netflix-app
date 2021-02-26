@@ -6,10 +6,11 @@ import "./App.css";
 import HomeScreen from "./components/screen/homeScreen";
 import LoginScreen from "./components/screen/loginScreen";
 import { auth } from "./firebase";
-import { login , logout, selectUser } from "./features/userSlice";
+//import { login , logout, selectUser } from "./features/userSlice";
+import { login, logout } from "./store/action";
 
 function App() {
-  const user = useSelector(selectUser);
+  const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   useEffect( () => {
